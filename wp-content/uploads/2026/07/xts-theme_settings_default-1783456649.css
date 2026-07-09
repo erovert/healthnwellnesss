@@ -1,0 +1,177 @@
+@font-face {
+	font-weight: normal;
+	font-style: normal;
+	font-family: "woodmart-font";
+	src: url("https://healthnwellness.pk/wp-content/themes/woodmart/fonts/woodmart-font-2-400.woff2?v=8.3.8") format("woff2");
+}
+
+@font-face {
+	font-family: "star";
+	font-weight: 400;
+	font-style: normal;
+	src: url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/star.eot#iefix") format("embedded-opentype"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/star.woff") format("woff"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/star.ttf") format("truetype"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/star.svg#star") format("svg");
+}
+
+@font-face {
+	font-family: "WooCommerce";
+	font-weight: 400;
+	font-style: normal;
+	src: url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/WooCommerce.eot#iefix") format("embedded-opentype"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/WooCommerce.woff") format("woff"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/WooCommerce.ttf") format("truetype"), url("https://healthnwellness.pk/wp-content/plugins/woocommerce/assets/fonts/WooCommerce.svg#WooCommerce") format("svg");
+}
+
+:root {
+	--wd-cat-brd-radius: 50%;
+	--wd-text-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-text-font-weight: 400;
+	--wd-text-color: rgb(99,99,99);
+	--wd-text-font-size: 15px;
+	--wd-title-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-title-font-weight: 700;
+	--wd-title-color: #242424;
+	--wd-entities-title-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-entities-title-font-weight: 700;
+	--wd-entities-title-color: #333333;
+	--wd-entities-title-color-hover: rgb(51 51 51 / 65%);
+	--wd-alternative-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-widget-title-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-widget-title-font-weight: 700;
+	--wd-widget-title-transform: capitalize;
+	--wd-widget-title-color: #333;
+	--wd-widget-title-font-size: 16px;
+	--wd-header-el-font: "Yantramanav", Arial, Helvetica, sans-serif;
+	--wd-header-el-font-weight: 700;
+	--wd-header-el-transform: capitalize;
+	--wd-header-el-font-size: 14px;
+	--wd-brd-radius: 10px;
+	--wd-otl-style: dotted;
+	--wd-otl-width: 2px;
+	--wd-primary-color: rgb(245,154,87);
+	--wd-alternative-color: rgb(224,234,240);
+	--btn-default-transform: none;
+	--btn-default-bgcolor: #f7f7f7;
+	--btn-default-bgcolor-hover: #efefef;
+	--btn-accented-transform: none;
+	--btn-accented-bgcolor: rgb(216,156,78);
+	--btn-accented-bgcolor-hover: rgb(216,156,78);
+	--btn-transform: none;
+	--wd-form-brd-width: 1px;
+	--notices-success-bg: #459647;
+	--notices-success-color: #fff;
+	--notices-warning-bg: #E0B252;
+	--notices-warning-color: #fff;
+	--wd-link-color: #333333;
+	--wd-link-color-hover: #242424;
+}
+.wd-age-verify-wrap {
+	--wd-popup-width: 500px;
+}
+.wd-popup.wd-promo-popup {
+	background-color: rgb(245,154,87);
+	background-image: none;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: left center;
+}
+.wd-promo-popup-wrap {
+	--wd-popup-width: 480px;
+	--wd-popup-padding: 0px;
+}
+.wd-page-title .wd-page-title-bg img {
+	object-fit: cover;
+	object-position: center top;
+}
+.wd-footer {
+	background-color: rgb(15,15,15);
+	background-image: none;
+}
+html .wd-nav-mobile > li > a {
+	text-transform: capitalize;
+}
+.whb-top-bar .wd-nav.wd-nav-secondary > li > a {
+	font-family: "Work Sans", Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+}
+html .post.wd-post:not(.blog-design-small) .wd-entities-title {
+	font-size: 18px;
+}
+.page .wd-page-content {
+	background-image: url(https://healthnwellness.pk/wp-content/uploads/2023/04/wd-furniture-background.jpg);
+	background-repeat: repeat;
+}
+.woodmart-archive-shop:not(.single-product) .wd-page-content {
+	background-image: url(https://healthnwellness.pk/wp-content/uploads/2023/04/wd-furniture-background.jpg);
+	background-repeat: repeat;
+}
+.single-product .wd-page-content {
+	background-image: url(https://healthnwellness.pk/wp-content/uploads/2023/04/wd-furniture-background.jpg);
+	background-repeat: repeat;
+}
+.woodmart-archive-blog .wd-page-content {
+	background-image: url(https://healthnwellness.pk/wp-content/uploads/2023/04/wd-furniture-background.jpg);
+	background-repeat: repeat;
+}
+.single-post .wd-page-content {
+	background-image: url(https://healthnwellness.pk/wp-content/uploads/2023/04/wd-furniture-background.jpg);
+	background-repeat: repeat;
+}
+html .wd-buy-now-btn {
+	color: rgb(255,255,255);
+	background: rgb(216,156,78);
+}
+html .wd-buy-now-btn:hover {
+	color: rgb(255,255,255);
+	background: rgb(216,156,78);
+}
+body, [class*=color-scheme-light], [class*=color-scheme-dark], .wd-search-form[class*="wd-header-search-form"] form.searchform, .wd-el-search .searchform {
+	--wd-form-color: rgb(119,119,119);
+	--wd-form-placeholder-color: rgb(119,119,119)7;
+	--wd-form-bg: rgb(255,255,255);
+}
+.mfp-wrap.wd-popup-quick-view-wrap {
+	--wd-popup-width: 920px;
+}
+.woocommerce-product-gallery {
+	--wd-gallery-gap: 20px;
+}
+
+@media (max-width: 1024px) {
+	.woocommerce-product-gallery {
+		--wd-gallery-gap: 20px;
+	}
+
+}
+
+@media (max-width: 768.98px) {
+	.woocommerce-product-gallery {
+		--wd-gallery-gap: 10px;
+	}
+
+}
+:root{
+--wd-container-w: 1400px;
+--wd-form-brd-radius: 35px;
+--btn-default-color: #333;
+--btn-default-color-hover: #333;
+--btn-accented-color: #fff;
+--btn-accented-color-hover: #fff;
+--btn-default-brd-radius: 35px;
+--btn-default-box-shadow: none;
+--btn-default-box-shadow-hover: none;
+--btn-accented-brd-radius: 35px;
+--btn-accented-box-shadow: none;
+--btn-accented-box-shadow-hover: none;
+}
+
+@media (min-width: 1400px) {
+section.elementor-section.wd-section-stretch > .elementor-container {
+margin-left: auto;
+margin-right: auto;
+}
+}
+
+
+.wd-page-title {
+background-color: rgb(174,182,161);
+}
+
