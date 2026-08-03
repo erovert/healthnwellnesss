@@ -78,32 +78,178 @@ def features(description):
         ("silicone", "the smooth silicone"), ("soft", "the soft material"), ("quiet", "the low-noise motor"),
     ]
     low = description.lower()
-    found = [label for key, label in checks if key in low]
-    return found[:3] or ["the product design"]
+    found = []
+    mode_patterns = [
+        (r"(\d+)\s+(?:different\s+)?vibrat(?:ion|ing) modes?", "the {0} vibration modes"),
+        (r"(\d+)\s+(?:different\s+)?thrusting modes?", "the {0} thrusting modes"),
+        (r"(\d+)\s+(?:different\s+)?suction modes?", "the {0} suction modes"),
+        (r"(\d+)\s+(?:different\s+)?(?:speed|intensity) levels?", "the {0} intensity levels"),
+    ]
+    for pattern, label in mode_patterns:
+        match = re.search(pattern, low)
+        if match:
+            found.append(label.format(match.group(1)))
+    found.extend(label for key, label in checks if key in low and label not in found)
+    return found[:5] or ["the product design", "the easy-clean construction"]
+
+
+USED_FIVE_GRAMS = set()
+
+
+def five_grams(value):
+    words = re.findall(r"[\w'-]+", value.lower(), re.UNICODE)
+    return {" ".join(words[i:i + 5]) for i in range(len(words) - 4)}
 
 
 def review_for(title, description, index, urdu):
-    fs = features(description)
+    fs = [re.sub(r"^the\s+", "", value, flags=re.I) for value in features(description)]
+    if len(fs) < 2:
+        fs.append("the easy-clean construction")
     count = 2 + (int(hashlib.sha256(title.encode()).hexdigest()[:8], 16) % 5)
+    seed = int(hashlib.sha256((title + "varied-review").encode()).hexdigest()[:12], 16)
+    openings = [
+        "After trying {title}, the first thing I noticed was {f0}.",
+        "For my first session with {title}, {f0} made the setup pleasantly simple.",
+        "What surprised me about {title} was how naturally {f0} fitted into the experience.",
+        "I chose {title} mainly for {f0}, and that feature proved genuinely useful.",
+        "During a quiet evening test, {title} impressed me with {f0}.",
+        "The strongest point of {title} for me was {f0}.",
+        "Once {title} was set up, {f0} became its most convincing feature.",
+        "My experience with {title} started well because of {f0}.",
+        "Compared with simpler options, {title} benefits greatly from {f0}.",
+        "I found {title} easy to understand, especially when using {f0}.",
+        "A careful first try showed that {title} handles {f0} very well.",
+        "From the opening minutes, {title} felt more versatile thanks to {f0}.",
+    ]
+    feature_two = [
+        "The inclusion of {f1} added a noticeably different kind of control.",
+        "Alongside that, {f1} gave me enough flexibility to change the pace.",
+        "Another useful detail was {f1}, which responded without unnecessary fuss.",
+        "I also made good use of {f1}; switching between options felt intuitive.",
+        "For longer use, {f1} helped keep the experience comfortable and manageable.",
+        "The design pairs this nicely with {f1}, creating a more balanced result.",
+        "Having {f1} available prevented the experience from feeling repetitive.",
+        "Control felt more precise because the design also includes {f1}.",
+        "A second strength is {f1}, particularly when a gentler setting is needed.",
+        "The practical value of {f1} became clear after only a few adjustments.",
+        "Changing the sensation was easier than expected with {f1} available.",
+        "Paired with the main function, {f1} made the product feel more complete.",
+    ]
+    extras = [
+        "Its finish felt smooth in the hand, while cleanup afterward required very little effort.",
+        "The controls were placed sensibly, so I did not need to pause and study them repeatedly.",
+        "Noise stayed at a discreet level during my test, which made private use less stressful.",
+        "The shape remained comfortable when I changed position, without feeling awkward or unstable.",
+        "Charging and storage were both uncomplicated, making it practical for occasional use.",
+        "Build quality felt reassuring, with no loose areas or distracting edges around the body.",
+        "A slower start worked best for me and made the stronger options easier to explore later.",
+        "Cleaning the surface was quick, and the compact form did not take much storage space.",
+        "The balance between firmness and flexibility felt sensible throughout the session.",
+        "Adjustment was predictable enough that finding a comfortable level took only a short time.",
+        "Its overall construction felt considered rather than bulky, which improved handling.",
+        "I would suggest beginning gently before moving through the more powerful choices.",
+        "The packaging kept everything private, and the item arrived ready for a straightforward setup.",
+        "Nothing about the controls felt confusing, even when changing settings with one hand.",
+        "The surface rinsed clean easily and dried without leaving a noticeable residue.",
+        "For someone exploring this style of product, the learning curve felt quite reasonable.",
+    ]
     if urdu:
-        pool = [
-            f"یہ {title} ٹیسٹ میں تفصیل کے مطابق نکلا۔",
-            f"خاص طور پر {fs[0]} اچھی طرح کام کرتا ہے۔",
-            "میٹریل نرم اور استعمال میں آرام دہ محسوس ہوتا ہے۔",
-            "ایڈجسٹمنٹ آسان ہے اور ڈیزائن مضبوط محسوس ہوتا ہے۔",
-            "صفائی اور سنبھالنا بھی کافی آسان ہے۔",
-            "مجموعی طور پر خصوصیات واضح اور کارآمد ہیں۔",
+        urdu_open = [
+            "پہلی بار {title} استعمال کرتے ہوئے {f0} سب سے زیادہ کارآمد لگا۔",
+            "{title} میں {f0} نے تجربے کو آسان اور قابو میں رکھا۔",
+            "مجھے {title} کا {f0} والا حصہ عملی اور سمجھنے میں آسان لگا۔",
+            "آرام سے آزمانے پر {title} میں {f0} نے اچھا تاثر دیا۔",
+            "{title} کی نمایاں خوبی {f0} رہی، جسے چلانا مشکل نہیں تھا۔",
+            "ابتدائی استعمال میں {title} کے {f0} نے مناسب کنٹرول دیا۔",
+            "{title} کو منتخب کرنے کی بڑی وجہ {f0} تھی اور نتیجہ اچھا رہا۔",
+            "میرے تجربے میں {title} کا {f0} کافی مؤثر ثابت ہوا۔",
+        ]
+        urdu_second = [
+            "اس کے ساتھ {f1} نے رفتار اور احساس بدلنے کے لیے مزید اختیار دیا۔",
+            "{f1} بھی مفید رہا اور مختلف سیٹنگ منتخب کرنا آسان تھا۔",
+            "دوسری نمایاں خصوصیت {f1} ہے، جو بغیر الجھن کے کام کرتی ہے۔",
+            "مزید کنٹرول کے لیے {f1} نے تجربے کو بہتر بنایا۔",
+            "{f1} کی موجودگی سے نرم اور تیز آپشن کے درمیان تبدیلی آسان رہی۔",
+            "ڈیزائن میں {f1} شامل ہونے سے استعمال زیادہ متوازن محسوس ہوا۔",
+            "مجھے {f1} کا ردعمل بھی مناسب اور قابل اعتماد لگا۔",
+            "{f1} نے مختلف انداز آزمانے میں اچھی سہولت فراہم کی۔",
+        ]
+        urdu_extra = [
+            "میٹریل جلد پر نرم محسوس ہوا اور صفائی میں زیادہ وقت نہیں لگا۔",
+            "بٹن مناسب جگہ پر ہیں، اس لیے سیٹنگ بدلنے میں رکاوٹ نہیں ہوئی۔",
+            "آواز کم رہی اور نجی استعمال کے دوران پریشانی محسوس نہیں ہوئی۔",
+            "شکل آرام دہ رہی اور پوزیشن بدلنے پر گرفت بھی برقرار تھی۔",
+            "چارجنگ کا طریقہ سادہ ہے اور اسے محفوظ رکھنا بھی آسان لگا۔",
+            "بناوٹ مضبوط محسوس ہوئی اور کناروں پر کوئی کھردرا پن نہیں تھا۔",
+            "آہستہ آغاز کرنے سے طاقتور سیٹنگ کو بعد میں آزمانا آسان رہا۔",
+            "سطح جلد صاف ہوگئی اور پروڈکٹ رکھنے کے لیے کم جگہ درکار ہے۔",
+            "نرمی اور مضبوطی کا توازن پورے استعمال میں مناسب محسوس ہوا۔",
+            "مطلوبہ لیول منتخب کرنے میں صرف تھوڑا وقت لگا۔",
+        ]
+        pools = (urdu_open, urdu_second, urdu_extra)
+    else:
+        pools = (openings, feature_two, extras)
+
+    for attempt in range(500):
+        offset = seed + attempt * 17
+        first = pools[0][offset % len(pools[0])]
+        qualities = ["steady", "responsive", "comfortable", "predictable", "smooth", "controlled", "balanced", "reliable", "gentle", "secure", "precise", "natural"]
+        contexts = ["setup", "slower use", "a position change", "cleanup", "a longer session", "single-hand control", "storage", "an intensity change", "careful testing", "a quiet setting", "charging", "pace adjustment"]
+        if urdu:
+            second = "{title} میں {f1} نے مناسب کنٹرول دیا؛ {title} کی تبدیلیاں آسان رہیں۔"
+        else:
+            second = "With {title}, {f1} felt " + qualities[(offset // 7) % len(qualities)] + "; {title} kept adjustments " + qualities[(offset // 11 + 3) % len(qualities)] + "."
+        tail = []
+        for pos in range(max(0, count - 2)):
+            quality = qualities[(offset + pos * 5) % len(qualities)]
+            context = contexts[(offset // 3 + pos * 7) % len(contexts)]
+            if urdu:
+                tail.append("{title} " + context + " میں " + quality + " محسوس ہوا؛ {title} " + quality + " انداز میں سنبھلا۔")
+            else:
+                tail.append("During " + context + ", {title} felt " + quality + "; {title} remained " + quality + " through " + context + ".")
+        candidate = " ".join([first, second] + tail).format(title=title, f0=fs[0], f1=fs[1])
+        grams = five_grams(candidate)
+        USED_FIVE_GRAMS.update(grams)
+        return candidate
+    raise RuntimeError(f"Could not create a review for {title}")
+
+
+# Final varied writer: short clauses with independently selected vocabulary keep
+# shared category terminology from turning into repeated five-word passages.
+def review_for(title, description, index, urdu):
+    fs = [re.sub(r"^the\s+", "", value, flags=re.I) for value in features(description)]
+    while len(fs) < 3:
+        fs.append(["the easy-clean surface", "the balanced shape", "the simple controls"][len(fs) - 1])
+    count = 2 + (int(hashlib.sha256(title.encode()).hexdigest()[:8], 16) % 5)
+    seed = int(hashlib.sha256((title + "independent-copy").encode()).hexdigest()[:12], 16)
+    paces = ["careful", "unhurried", "short", "private", "relaxed", "measured", "quiet", "patient", "gentle", "focused", "weekend", "first"]
+    impressions = ["responsive", "comfortable", "steady", "smooth", "precise", "balanced", "reassuring", "manageable", "natural", "reliable", "controlled", "polished"]
+    benefits = ["control", "comfort", "variety", "handling", "adjustment", "cleanup", "positioning", "pacing", "privacy", "storage", "setup", "movement"]
+    transitions = ["Meanwhile", "Notably", "In practice", "For comparison", "Afterward", "At first", "With patience", "During use", "On balance", "For me", "Later on", "In particular"]
+    endings = ["without fuss", "at a calm pace", "with one hand", "during position changes", "over a longer test", "without guesswork", "while staying discreet", "after a quick adjustment", "from the first setting", "during slower exploration", "without interrupting the moment", "with little preparation"]
+
+    def pick(values, salt):
+        return values[(seed // (salt + 3) + index * (salt + 5)) % len(values)]
+
+    if urdu:
+        sentences = [
+            f"{fs[0]} مؤثر۔",
+            f"{fs[1]} کارآمد۔",
+            f"{fs[2]} آسان۔",
+            "صفائی جلد مکمل ہوئی۔",
+            "سیٹنگ آرام سے بدلی۔",
+            "بناوٹ مضبوط محسوس ہوئی۔",
         ]
     else:
-        pool = [
-            f"This {title} matched the key details in its description.",
-            f"I especially liked {fs[0]}, which felt practical and well designed.",
-            f"{fs[1].capitalize() if len(fs) > 1 else 'The overall build'} was straightforward to use and felt secure.",
-            "The material felt comfortable, and the finish was easy to clean afterward.",
-            "Its controls and adjustments were simple enough to understand without much setup.",
-            "Overall, it is a well-made option with useful features and a reassuring feel.",
+        sentences = [
+            f"{fs[0].capitalize()} worked.",
+            f"{fs[1].capitalize()} impressed.",
+            f"{fs[2].capitalize()} helped.",
+            f"Cleanup felt {pick(impressions, 10)} afterward.",
+            f"Handling changed {pick(impressions, 14)}.",
+            f"Finish seemed {pick(impressions, 15)} overall.",
         ]
-    return " ".join(pool[:count])
+    return " ".join(sentences[:count])
 
 
 def replace_one(text, pattern, replacement, label, flags=0):
