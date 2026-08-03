@@ -6,7 +6,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CATEGORIES = ["anal-plugs", "vibrators-for-female"]
+CATEGORIES = ["anal-plugs"]
 DATE_ISO = "2026-08-02T12:00:00+00:00"
 DATE_TEXT = "August 2, 2026"
 
@@ -250,6 +250,20 @@ def review_for(title, description, index, urdu):
             f"Finish seemed {pick(impressions, 15)} overall.",
         ]
     return " ".join(sentences[:count])
+
+
+PROPOSAL_TEXT = (ROOT / "review-proposals" / "butt-plugs-review-proposal.md").read_text(encoding="utf-8")
+APPROVED_REVIEWS = {}
+for proposal_block in re.split(r"\n## \d+\. ", PROPOSAL_TEXT)[1:]:
+    proposal_title, proposal_body = proposal_block.split("\n", 1)
+    proposal_match = re.search(r"Review: (.*?)\n\nLanguage:", proposal_body, re.S)
+    APPROVED_REVIEWS[proposal_title.strip()] = proposal_match.group(1).strip()
+
+
+def review_for(title, description, index, urdu):
+    if title not in APPROVED_REVIEWS:
+        raise RuntimeError(f"No approved proposal found for {title}")
+    return APPROVED_REVIEWS[title]
 
 
 def replace_one(text, pattern, replacement, label, flags=0):
