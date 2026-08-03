@@ -6,9 +6,9 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CATEGORIES = ["anal-plugs"]
-DATE_ISO = "2026-08-02T12:00:00+00:00"
-DATE_TEXT = "August 2, 2026"
+CATEGORIES = ["vibrators-for-female"]
+DATE_ISO = "2026-08-04T12:00:00+00:00"
+DATE_TEXT = "August 4, 2026"
 
 
 def product_slugs():
@@ -252,7 +252,7 @@ def review_for(title, description, index, urdu):
     return " ".join(sentences[:count])
 
 
-PROPOSAL_TEXT = (ROOT / "review-proposals" / "butt-plugs-review-proposal.md").read_text(encoding="utf-8")
+PROPOSAL_TEXT = (ROOT / "review-proposals" / "female-vibrators-review-proposal.md").read_text(encoding="utf-8")
 APPROVED_REVIEWS = {}
 for proposal_block in re.split(r"\n## \d+\. ", PROPOSAL_TEXT)[1:]:
     proposal_title, proposal_body = proposal_block.split("\n", 1)
@@ -275,7 +275,9 @@ def replace_one(text, pattern, replacement, label, flags=0):
 
 def update_page(path, index, urdu):
     text = path.read_text(encoding="utf-8")
-    if 'data-synthetic-review="true"' in text:
+    slug = path.parent.name
+    review_id = f"synthetic-review-female-vibrators-{slug}"
+    if f"#{review_id}" in text:
         return None
 
     schema_match = re.search(r'<script type="application/ld\+json" class="rank-math-schema">(.*?)</script>', text, re.S)
@@ -290,7 +292,7 @@ def update_page(path, index, urdu):
     old_rating_count = int(agg["ratingCount"])
     old_review_count = int(agg["reviewCount"])
     old_avg = float(agg["ratingValue"])
-    rating = 5 if not had_reviews else (4 if old_avg >= 4.90 else 5)
+    rating = 4 if not had_reviews or old_avg >= 4.90 else 5
     new_rating_count = old_rating_count + 1
     new_review_count = old_review_count + 1
     new_avg = (old_avg * old_rating_count + rating) / new_rating_count
@@ -298,8 +300,6 @@ def update_page(path, index, urdu):
     display_avg = f"{new_avg:.1f}"
     width = f"{new_avg * 20:.1f}"
     review = review_for(title, description, index, urdu)
-    slug = path.parent.name
-    review_id = f"synthetic-review-{slug}"
 
     agg["ratingValue"] = schema_avg
     agg["ratingCount"] = str(new_rating_count)
@@ -365,7 +365,7 @@ def update_page(path, index, urdu):
     else:
         text = replace_one(text, r'Reviews\s*</h2>', f'1 review for <span>{html.escape(title)}</span>\t\t\t\t</h2>', "empty review heading")
     parity = "odd alt thread-odd thread-alt" if old_review_count % 2 == 0 else "even thread-even"
-    review_html = f'''<li class="review {parity} depth-1 wd-col" id="li-{review_id}" data-synthetic-review="true">
+    review_html = f'''<li class="review {parity} depth-1 wd-col" id="li-{review_id}" data-synthetic-review="true" data-review-batch="female-vibrators">
 \t<div id="{review_id}" class="comment_container">
 \t\t<div class="comment-text">
 \t<p class="meta">
